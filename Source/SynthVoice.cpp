@@ -42,6 +42,8 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int numOu
 	spec.numChannels = numOutputChannels;
 
 	osc.prepare(sampleRate);
+	osc.setTremoloAmount(0.003);
+	osc.setTremoloFrequency(7.0);
 
 	gain.prepare(spec);
 	

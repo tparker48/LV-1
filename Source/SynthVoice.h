@@ -2,7 +2,7 @@
 
 #include "JuceHeader.h"
 #include "SynthSound.h"
-#include "TriangleOsc.h"
+#include "LV_Oscillator.h"
 
 class SynthVoice : public SynthesiserVoice
 {
@@ -16,7 +16,7 @@ public:
 	void renderNextBlock(AudioBuffer< float > & outputBuffer, int startSample, int numSamples) override;
 
 private:
-	TriangleOsc osc;
+	LV_Oscillator osc;
 	dsp::Gain<float> gain;
 	ADSR adsr;
 	ADSR::Parameters adsr_params;
