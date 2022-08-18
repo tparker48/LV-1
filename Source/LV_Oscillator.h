@@ -16,7 +16,7 @@ public:
 	void setTremoloAmount(float amount);
 	void setTremoloFrequency(float frequency);
 
-	void processBlock(AudioSampleBuffer& buffer, int startSample, int numSamples);
+	void processBlock(AudioSampleBuffer& buffer, int startSample, int numSamples, float gain);
 
 private:
 	float tri();

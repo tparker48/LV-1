@@ -71,9 +71,10 @@ void SynthVoice::renderNextBlock(AudioBuffer< float >& outputBuffer, int startSa
 
 	synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
 	synthBuffer.clear();
-
 	
-	osc.processBlock(synthBuffer, 0, synthBuffer.getNumSamples());
+	osc.processBlock(synthBuffer, 0, synthBuffer.getNumSamples(), 0.8f);
+	noise.processBlock(synthBuffer, 0, synthBuffer.getNumSamples(), 0.2f);
+
 	dsp::AudioBlock<float> audioBlock(synthBuffer);
 	gain.process(dsp::ProcessContextReplacing<float>(audioBlock));
 	adsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());

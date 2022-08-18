@@ -22,6 +22,9 @@
             file="Source/UI/SliderLookAndFeel.h"/>
     </GROUP>
     <GROUP id="{02FFA33A-75F3-86BB-67D3-F4477C4AF7F9}" name="Source">
+      <FILE id="rsyQ1F" name="LV_Oscillator.cpp" compile="1" resource="0"
+            file="Source/LV_Oscillator.cpp"/>
+      <FILE id="FOUARt" name="LV_Oscillator.h" compile="0" resource="0" file="Source/LV_Oscillator.h"/>
       <FILE id="wuQqI3" name="PluginProcessor.cpp" compile="1" resource="0"
             file="Source/PluginProcessor.cpp"/>
       <FILE id="gXbf5C" name="PluginProcessor.h" compile="0" resource="0"
@@ -29,8 +32,8 @@
       <FILE id="XF9OwA" name="PluginEditor.cpp" compile="1" resource="0"
             file="Source/PluginEditor.cpp"/>
       <FILE id="ZPSQDn" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-      <FILE id="B2OtHa" name="TriangleOsc.cpp" compile="1" resource="0" file="Source/TriangleOsc.cpp"/>
-      <FILE id="Zsm5Qv" name="TriangleOsc.h" compile="0" resource="0" file="Source/TriangleOsc.h"/>
+      <FILE id="gji5LG" name="LV_Noise.cpp" compile="1" resource="0" file="Source/LV_Noise.cpp"/>
+      <FILE id="Qjn1fm" name="LV_Noise.h" compile="0" resource="0" file="Source/LV_Noise.h"/>
       <FILE id="DHbysP" name="SynthSound.h" compile="0" resource="0" file="Source/SynthSound.h"/>
       <FILE id="DlYjbt" name="SynthVoice.cpp" compile="1" resource="0" file="Source/SynthVoice.cpp"/>
       <FILE id="s18BMh" name="SynthVoice.h" compile="0" resource="0" file="Source/SynthVoice.h"/>

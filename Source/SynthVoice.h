@@ -3,6 +3,7 @@
 #include "JuceHeader.h"
 #include "SynthSound.h"
 #include "LV_Oscillator.h"
+#include "LV_Noise.h"
 
 class SynthVoice : public SynthesiserVoice
 {
@@ -17,6 +18,8 @@ public:
 
 private:
 	LV_Oscillator osc;
+	LV_Noise noise;
+
 	dsp::Gain<float> gain;
 	ADSR adsr;
 	ADSR::Parameters adsr_params;

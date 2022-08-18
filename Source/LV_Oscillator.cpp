@@ -34,13 +34,13 @@ void LV_Oscillator::setTremoloFrequency(float frequency)
 }
 
 
-void LV_Oscillator::processBlock(AudioSampleBuffer& buffer, int startSample, int numSamples)
+void LV_Oscillator::processBlock(AudioSampleBuffer& buffer, int startSample, int numSamples, float gain)
 {
 	for (int sample = 0; sample < numSamples; sample++)
 	{
 		for (int channel = 0; channel < buffer.getNumChannels(); channel++)
 		{
-			buffer.addSample(channel, sample, tri());
+			buffer.addSample(channel, sample, gain * tri());
 		}
 		incrementPhase();
 	}
