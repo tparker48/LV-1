@@ -16,22 +16,27 @@ public:
 	void prepareToPlay(double sampleRate, int samplesPerBlock, int numOutputChannels);
 	void renderNextBlock(AudioBuffer< float > & outputBuffer, int startSample, int numSamples) override;
 
-	float tremoloAmt, tremoloHz;
-	float noiseAmt;
-	float filterCutoff;
-	float crunchLevel;
+	void setTremolo(float amount, float hz);
+	void setNoiseLevel(float amount);
+	void setFilterCutoff(float amount);
+	void setCrunchLevel(float amount);
+	void setAttack(float amount);
 
 private:
 	LV_Oscillator osc;
 	LV_Noise noise;
-
 	dsp::Gain<float> gain;
 	dsp::LadderFilter<float> lpf;
 	ADSR adsr;
-	ADSR::Parameters adsr_params;
+	ADSR::Parameters adsr_params = { 0.444f, 0.0f, 1.0f, 0.04f };
+
 	AudioBuffer<float> synthBuffer;
 
+	float tremoloAmt, tremoloHz;
+	float noiseAmt;
+	float filterCutoff;
 	float crunch;
+	float* crunchLevels;
 
 	bool isPrepared;
 };

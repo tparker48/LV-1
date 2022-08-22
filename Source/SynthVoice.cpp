@@ -34,29 +34,26 @@ void SynthVoice::controllerMoved(int controllerNumber, int newControllerValue)
 
 void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int numOutputChannels)
 {
-	adsr.setSampleRate(sampleRate);
+	crunchLevels = new float[3] { 60.0f, 10.0f, 1.0f };
 
 	dsp::ProcessSpec spec;
 	spec.maximumBlockSize = samplesPerBlock;
 	spec.sampleRate = sampleRate;
 	spec.numChannels = numOutputChannels;
 
-	osc.prepare(sampleRate);
-	// osc.setTremoloAmount(0.003);
-	// osc.setTremoloFrequency(7.0);
-
 	gain.prepare(spec);
-	gain.setGainLinear(0.1f);
+	gain.setGainLinear(0.2f);
 
 	lpf.prepare(spec);
 	lpf.setMode(dsp::LadderFilterMode::LPF24);
+	lpf.setResonance(0.0f);
 
-	adsr_params.attack = 0.044f;
+	osc.prepare(sampleRate);
+
+	adsr.setSampleRate(sampleRate);
 	adsr_params.decay = 0.0f;
 	adsr_params.sustain = 1.0f;
 	adsr_params.release = 0.16f;
-
-	adsr.setParameters(adsr_params);
 
 	isPrepared = true;
 }
@@ -74,30 +71,15 @@ void SynthVoice::renderNextBlock(AudioBuffer< float >& outputBuffer, int startSa
 	synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
 	synthBuffer.clear();
 
-	osc.setTremoloAmount(tremoloAmt * 0.007f);
-	osc.setTremoloFrequency(tremoloHz * 10.0f);
-	osc.processBlock(synthBuffer, 0, synthBuffer.getNumSamples(), 1.0f - (0.05*noiseAmt));
-	noise.processBlock(synthBuffer, 0, synthBuffer.getNumSamples(), (0.05*noiseAmt));
-
-	lpf.setCutoffFrequencyHz(75.0f + filterCutoff*18925.0f);
-	lpf.setResonance(0.0f);
-
-	if (crunchLevel == 3.0f)
-	{
-		crunch = 1.0f;
-	}
-	else if (crunchLevel == 2.0f)
-	{
-		crunch = 10.0f;
-	}
-	else
-	{
-		crunch = 60.0f;
-	}
-
+	osc.setTremoloAmount(tremoloAmt);
+	osc.setTremoloFrequency(tremoloHz);
+	lpf.setCutoffFrequencyHz(filterCutoff);
 	lpf.setDrive(crunch);
 
 	dsp::AudioBlock<float> audioBlock(synthBuffer);
+
+	osc.processBlock(synthBuffer, 0, synthBuffer.getNumSamples(), 1.0f - noiseAmt);
+	noise.processBlock(synthBuffer, 0, synthBuffer.getNumSamples(), noiseAmt);
 	lpf.process(dsp::ProcessContextReplacing<float>(audioBlock));
 	gain.process(dsp::ProcessContextReplacing<float>(audioBlock));
 	adsr.applyEnvelopeToBuffer(synthBuffer, 0, synthBuffer.getNumSamples());
@@ -111,4 +93,36 @@ void SynthVoice::renderNextBlock(AudioBuffer< float >& outputBuffer, int startSa
 			clearCurrentNote();
 		}
 	}
+}
+
+
+void SynthVoice::setTremolo(float level, float hz)
+{
+	tremoloAmt = level * 0.007f;
+	tremoloHz = hz * 10.0f;
+}
+
+
+void SynthVoice::setNoiseLevel(float level)
+{
+	noiseAmt = level * 0.1;
+}
+
+
+void SynthVoice::setFilterCutoff(float cutoff)
+{
+	filterCutoff = 100.0f + cutoff * 19000.0f;
+}
+
+
+void SynthVoice::setCrunchLevel(float level)
+{
+	crunch = crunchLevels[int(level)-1];
+}
+
+
+void SynthVoice::setAttack(float amount)
+{
+	adsr_params.attack = 0.025f  + (amount * 0.7f);
+	adsr.setParameters(adsr_params);
 }
