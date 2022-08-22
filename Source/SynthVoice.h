@@ -19,11 +19,12 @@ public:
 	void setTremolo(float amount, float hz);
 	void setNoiseLevel(float amount);
 	void setFilterCutoff(float amount);
+	void setFilterResonance(float resonance);
 	void setCrunchLevel(float amount);
 	void setAttack(float amount);
 
 private:
-	LV_Oscillator osc;
+	LV_Oscillator oscMain;
 	LV_Noise noise;
 	dsp::Gain<float> gain;
 	dsp::LadderFilter<float> lpf;
@@ -33,8 +34,8 @@ private:
 	AudioBuffer<float> synthBuffer;
 
 	float tremoloAmt, tremoloHz;
-	float noiseAmt;
-	float filterCutoff;
+	float noiseAmt, oscAmt, oscHiAmt;
+	float filterCutoff, filterResonance;
 	float crunch;
 	float* crunchLevels;
 

@@ -8,7 +8,7 @@ bool SynthVoice::canPlaySound(SynthesiserSound* sound)
 
 void SynthVoice::startNote(int midiNoteNumber, float velocity, SynthesiserSound* sound, int currentPitchWheelPosition)  
 {
-	osc.setFrequency(MidiMessage::getMidiNoteInHertz(midiNoteNumber));
+	oscMain.setFrequency(MidiMessage::getMidiNoteInHertz(midiNoteNumber));
 	adsr.noteOn();
 }
 
@@ -46,9 +46,8 @@ void SynthVoice::prepareToPlay(double sampleRate, int samplesPerBlock, int numOu
 
 	lpf.prepare(spec);
 	lpf.setMode(dsp::LadderFilterMode::LPF24);
-	lpf.setResonance(0.0f);
 
-	osc.prepare(sampleRate);
+	oscMain.prepare(sampleRate);
 
 	adsr.setSampleRate(sampleRate);
 	adsr_params.decay = 0.0f;
@@ -71,14 +70,17 @@ void SynthVoice::renderNextBlock(AudioBuffer< float >& outputBuffer, int startSa
 	synthBuffer.setSize(outputBuffer.getNumChannels(), numSamples, false, false, true);
 	synthBuffer.clear();
 
-	osc.setTremoloAmount(tremoloAmt);
-	osc.setTremoloFrequency(tremoloHz);
+	oscMain.setTremoloAmount(tremoloAmt);
+	oscMain.setTremoloFrequency(tremoloHz);
+
 	lpf.setCutoffFrequencyHz(filterCutoff);
+	lpf.setResonance(filterResonance);
 	lpf.setDrive(crunch);
 
 	dsp::AudioBlock<float> audioBlock(synthBuffer);
 
-	osc.processBlock(synthBuffer, 0, synthBuffer.getNumSamples(), 1.0f - noiseAmt);
+	oscMain.processBlock(synthBuffer, 0, synthBuffer.getNumSamples(), oscAmt);
+
 	noise.processBlock(synthBuffer, 0, synthBuffer.getNumSamples(), noiseAmt);
 	lpf.process(dsp::ProcessContextReplacing<float>(audioBlock));
 	gain.process(dsp::ProcessContextReplacing<float>(audioBlock));
@@ -105,13 +107,20 @@ void SynthVoice::setTremolo(float level, float hz)
 
 void SynthVoice::setNoiseLevel(float level)
 {
-	noiseAmt = level * 0.1;
+	noiseAmt = level * 0.1f;
+	oscAmt = 1.0f - noiseAmt;
 }
 
 
 void SynthVoice::setFilterCutoff(float cutoff)
 {
 	filterCutoff = 100.0f + cutoff * 19000.0f;
+}
+
+
+void SynthVoice::setFilterResonance(float resonance)
+{
+	filterResonance = resonance;
 }
 
 

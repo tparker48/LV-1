@@ -62,7 +62,7 @@ void LV1AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
             auto tremoloAmt = vts.getRawParameterValue("bigKnob");
             auto tremoloHz = vts.getRawParameterValue("mediumKnob");
             auto attack = vts.getRawParameterValue("smallKnob1");
-            auto sK2 = vts.getRawParameterValue("smallKnob2");
+            auto filterResonance = vts.getRawParameterValue("smallKnob2");
             auto filterCutoff = vts.getRawParameterValue("smallKnob3");
             auto noiseLevel = vts.getRawParameterValue("slider");
             auto crunchLevel= vts.getRawParameterValue("toggle");
@@ -71,6 +71,7 @@ void LV1AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
             voice->setNoiseLevel(*noiseLevel);
             voice->setCrunchLevel(*crunchLevel);
             voice->setFilterCutoff(*filterCutoff);
+            voice->setFilterResonance(*filterResonance);
             voice->setAttack(*attack);
         }
     }
@@ -108,10 +109,10 @@ AudioProcessorValueTreeState::ParameterLayout LV1AudioProcessor::createParameter
         NormalisableRange<float>(0.0f, 1.0f, 0.0f), 0.33f);
 
     auto smallKnob2 = std::make_unique<AudioParameterFloat>("smallKnob2", "sK2",
-        NormalisableRange<float>(0.0f, 1.0f, 0.0f), 0.33f);
+        NormalisableRange<float>(0.0f, 1.0f, 0.0f), 0.0f);
 
     auto smallKnob3 = std::make_unique<AudioParameterFloat>("smallKnob3", "sK3",
-        NormalisableRange<float>(0.0f, 1.0f, 0.0f, 0.3f), 0.75f);
+        NormalisableRange<float>(0.0f, 1.0f, 0.0f, 0.3f), 0.75f); 
 
     auto slider = std::make_unique<AudioParameterFloat>("slider", "s",
         NormalisableRange<float>(0.0f, 1.0f, 0.0f), 0.3f);
