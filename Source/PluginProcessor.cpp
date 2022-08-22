@@ -57,12 +57,21 @@ void LV1AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::Mi
 
     for (int i = 0; i < synth.getNumVoices(); i++)
     {
-        if (dynamic_cast<SynthesiserVoice*>(synth.getVoice(i)) == nullptr)
+        if (auto voice = dynamic_cast<SynthVoice*>(synth.getVoice(i)))
         {
-            // osc controls
-            // adsr
-            // lfo
-            // etc
+            auto bK = vts.getRawParameterValue("bigKnob");
+            auto mK = vts.getRawParameterValue("mediumKnob");
+            auto sK1 = vts.getRawParameterValue("smallKnob1");
+            auto sK2 = vts.getRawParameterValue("smallKnob2");
+            auto sK3 = vts.getRawParameterValue("smallKnob3");
+            auto s = vts.getRawParameterValue("slider");
+            auto t = vts.getRawParameterValue("toggle");
+
+            voice->tremoloAmt = *bK;
+            voice->tremoloHz = *mK;
+            voice->noiseAmt = *s;
+            voice->filterCutoff = *sK3;
+            voice->crunchLevel = *t;
         }
     }
 
@@ -96,16 +105,16 @@ AudioProcessorValueTreeState::ParameterLayout LV1AudioProcessor::createParameter
         NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.2f);
 
     auto smallKnob1 = std::make_unique<AudioParameterFloat>("smallKnob1", "sK1",
-        NormalisableRange<float>(0.01f, 1.0f, 0.01f), 0.3f);
+        NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.3f);
 
     auto smallKnob2 = std::make_unique<AudioParameterFloat>("smallKnob2", "sK2",
         NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.3f);
 
     auto smallKnob3 = std::make_unique<AudioParameterFloat>("smallKnob3", "sK3",
-        NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.3f);
+        NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.002f);
 
     auto slider = std::make_unique<AudioParameterFloat>("slider", "s",
-        NormalisableRange<float>(0.0f, 1.0f, 0.01f), 0.5f);
+        NormalisableRange<float>(0.0f, 1.0f, 0.001f), 0.0002f);
 
     auto toggle = std::make_unique<AudioParameterFloat>("toggle", "t", 1.0, 3.0, 3.0);
 
